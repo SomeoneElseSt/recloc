@@ -3,6 +3,22 @@
 Three actions. That is the whole phone side, and it works because the plugin
 does the validating before anything is sent.
 
+## The prompt to paste into Apple Intelligence
+
+This is what the agent hands you at setup. In Shortcuts, open a new shortcut and give Apple's AI this prompt verbatim:
+
+```
+Make a shortcut where:
+1. When I receive a notification from the app 'Brrr'
+2. Filter for 'Title' contains 'Reminder'
+3. Add variable 'Body' from the notification to 'Reminders' with 'Alert' 'When I Arrive' at variable 'Subtitle' of 'Notification'.
+4. Show a notification saying 'Reminder added: followed by the variable 'Body', and include the variable 'Subtitle'.
+
+Do not add a Receive block. It's unnecessary.
+```
+
+Then check the result against the action list below: the location field must hold the notification's **Subtitle** itself (not the whole Shortcut Input), and the alert must be **When I Arrive**.
+
 ## The shortcut
 
 | # | Action | Settings |

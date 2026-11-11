@@ -1,0 +1,218 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>recloc · Location reminders that never leave your phone</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&display=swap');
+:root {
+  --ground: #FFFFFF;
+  --panel: #F6F5F2;
+  --ink: #2B2B2A;
+  --body: #555553;
+  --muted: #8A8A85;
+  --rule: #E0DED9;
+  --stroke: #E9E7E2;
+  --blue: #3B82F6;
+  --mark: #5B7FE8;
+  --sans: 'Figtree', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: var(--ground); }
+body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased; }
+.deck { width: 1920px; }
+.slide { position: relative; width: 1920px; height: 1080px; overflow: hidden;
+  background: var(--ground); }
+
+/* page number: top-right, above the panel, real slide index */
+.page-no { position: absolute; top: 12px; right: 70px; font: 400 20px var(--sans);
+  letter-spacing: .02em; color: var(--muted); z-index: 2; }
+
+/* the panel: 70/60 margins -> 1780x960, warm off-white, 40px radius, no stroke */
+.panel { position: absolute; left: 70px; top: 60px; width: 1780px; height: 960px;
+  background: var(--panel); border-radius: 40px; padding: 58px 90px 90px;
+  display: flex; flex-direction: column; }
+
+/* eyebrow: ALL CAPS, numbered, grey, centred */
+.label { font-size: 24px; font-weight: 500; letter-spacing: .05em; color: var(--muted);
+  text-align: center; }
+.panel h2 { margin: 30px auto 0; font-size: 68px; line-height: 1.1; letter-spacing: -.03em;
+  font-weight: 600; color: var(--ink); text-align: center; max-width: 1590px; }
+.panel h2 em { font-style: normal; color: var(--blue); }
+.lede { margin: 26px auto 0; font-size: 34px; line-height: 1.4; color: var(--body);
+  text-align: center; max-width: 1360px; }
+
+/* title + divider slides: full-bleed white, no panel, no page number */
+.statement { display: flex; flex-direction: column; justify-content: center;
+  align-items: center; text-align: center; padding: 0 180px; background: var(--ground); }
+.statement .kicker { font-size: 26px; font-weight: 500; letter-spacing: .05em;
+  color: var(--muted); }
+.statement h1 { margin: 30px 0 0; font-size: 154px; line-height: 1; letter-spacing: -.035em;
+  font-weight: 600; color: var(--ink); }
+.statement h1.single-word { letter-spacing: -.03em; }
+.statement p { margin: 38px 0 0; font-size: 38px; line-height: 1.35; color: #4A4A48;
+  max-width: 1270px; }
+.accent-bar { width: 90px; height: 4px; background: var(--blue); margin-top: 56px; }
+.meta { margin-top: 34px; font-size: 24px; color: var(--muted); }
+.statement .meta { font-size: 38px; color: #4A4A48; }
+
+/* wordmark: bottom-right, sitting below the panel edge on every slide */
+.mark { position: absolute; right: 70px; bottom: 10px; font-family: Georgia, 'Times New Roman', serif;
+  font-size: 28px; color: var(--mark); letter-spacing: -.01em; }
+
+/* cards: white on the panel, 1px warm stroke, 30px radius, no shadow */
+.cards { display: grid; gap: 26px; flex: 1; align-content: center; margin-top: 46px; }
+.cards.three { grid-template-columns: repeat(3, 1fr); }
+.card { background: #fff; border: 1px solid var(--stroke); border-radius: 30px;
+  padding: 30px 32px 34px; display: flex; flex-direction: column; }
+.card .num { font-size: 20px; font-weight: 500; letter-spacing: .05em; color: var(--muted); }
+.card .num.check { width: 36px; height: 36px; border: 2px solid var(--ink); border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center; font-size: 18px;
+  letter-spacing: 0; color: var(--ink); }
+.card h3 { margin: 16px 0 0; font-size: 36px; line-height: 1.15; letter-spacing: -.015em;
+  font-weight: 500; color: var(--ink); }
+.cards.titles-wrap .card h3 { min-height: 2.3em; }
+.card p { margin: 14px 0 0; font-size: 24px; line-height: 1.35; color: var(--body); }
+.card p code { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: .88em; }
+
+/* row list: hairline dividers, no fills, ink lead-ins */
+.flow { display: grid; flex: 1; grid-auto-rows: 1fr; margin-top: 46px;
+  font-size: 29px; color: var(--body); border-top: 1px solid var(--rule); }
+.flow div { border-bottom: 1px solid var(--rule); padding: 22px 0; display: flex;
+  align-items: center; }
+.flow b { font-weight: 600; color: var(--ink); margin-right: .4em; }
+.flow code, .flow .val { font-family: ui-monospace, 'SF Mono', Menlo, monospace; font-size: .9em;
+  color: var(--ink); margin: 0 .3em; }
+.flow .last b { color: var(--blue); }
+
+/* footer line + micro caption, styled like the reference's muted label */
+.foot { margin-top: auto; padding-top: 44px; font-size: 28px; font-weight: 500; color: var(--ink); }
+.foot small { display: block; margin-top: 12px; font-size: 20px; font-weight: 500;
+  color: var(--muted); letter-spacing: .05em; text-transform: uppercase; }
+.foot .eyebrow { color: var(--muted); }
+
+@media screen {
+  body { overflow: hidden; margin: 0; }
+  .deck { position: fixed; left: 0; top: 0; transform-origin: 0 0; }
+  .slide { display: none; }
+  .slide.current { display: block; }
+  .slide.statement.current { display: flex; }
+  .hint { position: fixed; left: 16px; bottom: 12px; font: 12px var(--sans); color: #999; }
+}
+</style>
+</head>
+<body>
+<main class="deck">
+
+<!-- 01 · Title -->
+<section class="slide statement current">
+  <div class="kicker">HERMES AGENT PLUGIN HACKATHON 2026</div>
+  <h1 class="single-word">recloc</h1>
+  <p>Ask your agent to remind you at a place. Apple Reminders alerts you when you arrive. Your location never leaves your phone.</p>
+  <div class="accent-bar"></div>
+  <div class="meta">SomeoneElseSt · November 11, 2026</div>
+  <div class="mark">recloc</div>
+</section>
+
+<!-- 02 · Problem -->
+<section class="slide">
+  <div class="page-no">/ 02</div>
+  <div class="panel">
+    <div class="label">02&nbsp;&nbsp;PROBLEM &amp; URGENCY</div>
+    <h2>You need milk at Walgreens. <em>By the time you're there, you've forgotten.</em></h2>
+    <div class="cards three titles-wrap">
+      <div class="card"><div class="num">01</div><h3>Time-based reminders don't know where you are</h3><p>"Remind me at 6pm" fires when you're nowhere near the shop.</p></div>
+      <div class="card"><div class="num">02</div><h3>Your agent can't act on arrival</h3><p>It can set a time or write a note. It cannot be there with you.</p></div>
+      <div class="card"><div class="num">03</div><h3>The obvious fix is creepy</h3><p>Location reminders usually mean streaming where you are to a server, forever.</p></div>
+    </div>
+    <div class="foot">Apple does this natively. Your agent cannot reach it.<small><span class="eyebrow">UNTIL RECLOC</span></small></div>
+  </div>
+  <div class="mark">recloc</div>
+</section>
+
+<!-- 03 · Insight -->
+<section class="slide">
+  <div class="page-no">/ 03</div>
+  <div class="panel">
+    <div class="label">03&nbsp;&nbsp;KEY INSIGHT</div>
+    <h2>The phone already watches your location. <em>We just never send it anywhere.</em></h2>
+    <p class="lede">iOS evaluates geofences on-device — the same mechanism behind Uber's airport ping. A server never learns where you are; it only needs to hand the phone a task.</p>
+    <div class="cards three titles-wrap">
+      <div class="card"><div class="num">01</div><h3>Address stays on the VM, briefly</h3><p>Validated before sending, so the phone can resolve it.</p></div>
+      <div class="card"><div class="num">02</div><h3>Coordinates never travel</h3><p>The fence lives in iOS. No GPS fix ever reaches a server.</p></div>
+      <div class="card"><div class="num">03</div><h3>The agent never sees the place</h3><p>Saved addresses are redacted from the model.</p></div>
+    </div>
+  </div>
+  <div class="mark">recloc</div>
+</section>
+
+<!-- 04 · Solution -->
+<section class="slide">
+  <div class="page-no">/ 04</div>
+  <div class="panel">
+    <div class="label">04&nbsp;&nbsp;SOLUTION OVERVIEW</div>
+    <h2>One sentence in. <em>A real location alert out.</em></h2>
+    <div class="flow">
+      <div><b>You:</b> "remind me to buy microfiber cloths at Walgreens"</div>
+      <div><b>recloc:</b> resolves the place, validates the address, gets <span class="val">HTTP 202</span> from brrr</div>
+      <div><b>iPhone:</b> a Shortcuts automation reads the notification, creates the reminder, sets <span class="val">When I Arrive</span></div>
+      <div class="last"><b>iOS:</b> watches the geofence on-device → you're alerted at the door</div>
+    </div>
+    <div class="foot">Outbound HTTPS only. Nothing listens on your machine.<small>NO PORT · NO TUNNEL · NO DOMAIN · NO CERTIFICATE</small></div>
+  </div>
+  <div class="mark">recloc</div>
+</section>
+
+<!-- 05 · Proof -->
+<section class="slide">
+  <div class="page-no">/ 05</div>
+  <div class="panel">
+    <div class="label">05&nbsp;&nbsp;PROOF</div>
+    <h2>Built, installed and tested on a real Hermes. <em>It works end to end.</em></h2>
+    <div class="cards three">
+      <div class="card"><div class="num check">✓</div><h3>Plugin Doctor</h3><p>7 tools, 1 hook — discovery, manifest, import and registration all pass.</p></div>
+      <div class="card"><div class="num check">✓</div><h3>Catalog validate</h3><p>Loadable, declared tools match, no collisions, security scan safe, no core override.</p></div>
+      <div class="card"><div class="num check">✓</div><h3>Live delivery</h3><p><code>add_reminder</code> completed in 0.80s, HTTP 202, reminder created on the phone with an arrival alert.</p></div>
+    </div>
+    <div class="foot">30 unit tests, no network, no Hermes install required.<small>ADDRESS FORMS TESTED AGAINST A REAL IPHONE · FULL ADDRESS · STREET ONLY · LOWERCASE · PARENTHESISED NAME</small></div>
+  </div>
+  <div class="mark">recloc</div>
+</section>
+
+<!-- 06 · Close -->
+<section class="slide statement">
+  <div class="kicker">RECLOC · MIT · github.com/SomeoneElseSt/recloc</div>
+  <h1>Your location<br>never leaves<br>your phone.</h1>
+  <div class="accent-bar"></div>
+  <div class="meta">Ask your agent once. Be reminded where it matters.</div>
+  <div class="mark">recloc</div>
+</section>
+
+</main>
+<div class="hint">← → to navigate</div>
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+let i = 0;
+function fit() {
+  const d = document.querySelector('.deck');
+  // Fill the window: use the larger scale so the slide covers it edge to edge.
+  const s = Math.max(window.innerWidth / 1920, window.innerHeight / 1080);
+  // Scale from the top-left origin, so offset in SCALED pixels.
+  d.style.left = `${(window.innerWidth - 1920 * s) / 2}px`;
+  d.style.top = `${(window.innerHeight - 1080 * s) / 2}px`;
+  d.style.transform = `scale(${s})`;
+}
+function show(n) {
+  slides[i].classList.remove('current');
+  i = Math.max(0, Math.min(slides.length - 1, n));
+  slides[i].classList.add('current');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); show(i + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); show(i - 1); }
+});
+window.addEventListener('resize', fit);
+fit();
+</script>
+</body>
+</html>

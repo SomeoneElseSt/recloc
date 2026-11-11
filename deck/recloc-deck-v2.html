@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>recloc · Location reminders that never leave your phone</title>
+<style>
+:root {
+  --ground: #07080B;
+  --panel: #ECEDF0;
+  --ink: #1C1E23;
+  --body: #3D414B;
+  --muted: #707684;
+  --faint: #9FABCA;
+  --rule: #D3D6DC;
+  --blue: #4F7BF7;
+  --blue-soft: #DCE5FD;
+  --green: #1FB866;
+  --sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --mono: 'Roboto Mono', ui-monospace, monospace;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; background: #000; }
+body { font-family: var(--sans); color: var(--ink); -webkit-font-smoothing: antialiased; }
+.deck { width: 1920px; }
+.slide { position: relative; width: 1920px; height: 1080px; overflow: hidden;
+  background: var(--ground); }
+.slide::before { content: ""; position: absolute; inset: 0;
+  background-image: radial-gradient(circle at 1px 1px, #ffffff1a 1px, transparent 0);
+  background-size: 46px 46px; }
+.page-no { position: absolute; top: 34px; right: 90px; font: 500 22px var(--mono); color: var(--faint); z-index: 2; }
+.panel { position: absolute; inset: 84px 90px; background: var(--panel); border-radius: 6px;
+  padding: 64px 80px; display: flex; flex-direction: column; }
+.label { font: 500 22px var(--mono); letter-spacing: .06em; color: var(--muted); }
+.panel h2 { margin: 22px 0 0; font-size: 64px; line-height: 1.08; letter-spacing: -.025em; font-weight: 700; max-width: 1500px; }
+.panel h2 em { font-style: normal; color: var(--blue); }
+.lede { margin: 18px 0 0; font-size: 30px; line-height: 1.4; color: var(--body); max-width: 1400px; }
+.statement { display: flex; flex-direction: column; justify-content: center; padding: 0 150px; color: #fff; }
+.statement .kicker { font: 500 26px var(--mono); color: var(--faint); letter-spacing: .06em; }
+.statement h1 { margin: 26px 0 0; font-size: 150px; line-height: .98; letter-spacing: -.04em; font-weight: 700; }
+.statement h1.single-word { letter-spacing: -.02em; }
+.statement p { margin: 34px 0 0; font-size: 38px; line-height: 1.35; color: #C9D2EA; max-width: 1350px; }
+.accent-bar { width: 88px; height: 4px; background: var(--blue); margin-top: 60px; }
+.meta { margin-top: 28px; font: 500 24px var(--mono); color: #7C87A6; }
+.cards { display: grid; gap: 28px; flex: 1; align-content: center; margin-top: 44px; }
+.cards.three { grid-template-columns: repeat(3, 1fr); }
+.card { background: #fff; border-radius: 18px; padding: 34px 34px 38px; display: flex; flex-direction: column; }
+.card .num { font: 600 26px var(--mono); color: var(--blue); }
+/* Reserve a two-line title only where a row actually needs it. */
+.card h3 { margin: 14px 0 0; font-size: 34px; line-height: 1.15; letter-spacing: -.015em; }
+.cards.titles-wrap .card h3 { min-height: 2.3em; }
+.card p code { font-family: var(--mono); font-size: .9em; }
+.card p { margin: 14px 0 0; font-size: 25px; line-height: 1.4; color: var(--body); }
+.flow { display: grid; gap: 14px; flex: 1; grid-auto-rows: 1fr; margin-top: 34px; font-size: 27px; color: var(--body); }
+.flow div { background: #fff; border-radius: 12px; padding: 20px 26px; border-left: 8px solid var(--blue); display: flex; align-items: center; }
+.flow b { font-family: var(--mono); }
+.flow b { color: var(--ink); margin: 0 2px; }
+.flow .last { border-left-color: var(--green); }
+.foot { margin-top: auto; padding-top: 40px; font-size: 26px; font-weight: 600; color: var(--ink); }
+.foot small { display: block; margin-top: 8px; font: 500 18px var(--mono); color: var(--muted); letter-spacing: .02em; }
+.foot .eyebrow { color: var(--blue); font-weight: 600; }
+@media screen {
+  body { overflow: hidden; margin: 0; }
+  .deck { position: fixed; left: 0; top: 0; transform-origin: 0 0; }
+  .slide { display: none; }
+  .slide.current { display: block; }
+  .slide.statement.current { display: flex; }
+  .hint { position: fixed; left: 16px; bottom: 12px; font: 12px var(--mono); color: #555; }
+}
+</style>
+</head>
+<body>
+<main class="deck">
+
+<!-- 01 · Title -->
+<section class="slide statement current">
+  <div class="kicker">HERMES AGENT PLUGIN HACKATHON 2026</div>
+  <h1 class="single-word">recloc</h1>
+  <p>Ask your agent to remind you at a place. Apple Reminders alerts you when you arrive. Your location never leaves your phone.</p>
+  <div class="accent-bar"></div>
+  <div class="meta">SomeoneElseSt · November 11, 2026</div>
+</section>
+
+<!-- 02 · Problem -->
+<section class="slide">
+  <div class="page-no">/ 02</div>
+  <div class="panel">
+    <div class="label">02&nbsp;&nbsp;PROBLEM &amp; URGENCY</div>
+    <h2>You need milk at Walgreens. <em>By the time you're there, you've forgotten.</em></h2>
+    <div class="cards three titles-wrap">
+      <div class="card"><div class="num">01</div><h3>Time-based reminders don't know where you are</h3><p>"Remind me at 6pm" fires when you're nowhere near the shop.</p></div>
+      <div class="card"><div class="num">02</div><h3>Your agent can't act on arrival</h3><p>It can set a time or write a note. It cannot be there with you.</p></div>
+      <div class="card"><div class="num">03</div><h3>The obvious fix is creepy</h3><p>Location reminders usually mean streaming where you are to a server, forever.</p></div>
+    </div>
+    <div class="foot">Apple does this natively. Your agent cannot reach it.<small><span class="eyebrow">UNTIL RECLOC</span></small></div>
+  </div>
+</section>
+
+<!-- 03 · Insight -->
+<section class="slide">
+  <div class="page-no">/ 03</div>
+  <div class="panel">
+    <div class="label">03&nbsp;&nbsp;KEY INSIGHT</div>
+    <h2>The phone already watches your location. <em>We just never send it anywhere.</em></h2>
+    <p class="lede">iOS evaluates geofences on-device — the same mechanism behind Uber's airport ping. A server never learns where you are; it only needs to hand the phone a task.</p>
+    <div class="cards three titles-wrap">
+      <div class="card"><div class="num">01</div><h3>Address stays on the VM, briefly</h3><p>Validated before sending, so the phone can resolve it.</p></div>
+      <div class="card"><div class="num">02</div><h3>Coordinates never travel</h3><p>The fence lives in iOS. No GPS fix ever reaches a server.</p></div>
+      <div class="card"><div class="num">03</div><h3>The agent never sees the place</h3><p>Saved addresses are redacted from the model.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 04 · Solution -->
+<section class="slide">
+  <div class="page-no">/ 04</div>
+  <div class="panel">
+    <div class="label">04&nbsp;&nbsp;SOLUTION OVERVIEW</div>
+    <h2>One sentence in. <em>A real location alert out.</em></h2>
+    <div class="flow">
+      <div><b>You:</b> "remind me to buy microfiber cloths at Walgreens"</div>
+      <div><b>recloc:</b> resolves the place, validates the address, gets <b>HTTP 202</b> from brrr</div>
+      <div><b>iPhone:</b> a Shortcuts automation reads the notification, creates the reminder, sets <b>When I Arrive</b></div>
+      <div class="last"><b>iOS:</b> watches the geofence on-device → you're alerted at the door</div>
+    </div>
+    <div class="foot">Outbound HTTPS only. Nothing listens on your machine.<small>NO PORT · NO TUNNEL · NO DOMAIN · NO CERTIFICATE</small></div>
+  </div>
+</section>
+
+<!-- 05 · Proof -->
+<section class="slide">
+  <div class="page-no">/ 05</div>
+  <div class="panel">
+    <div class="label">05&nbsp;&nbsp;PROOF</div>
+    <h2>Built, installed and tested on a real Hermes. <em>It works end to end.</em></h2>
+    <div class="cards three">
+      <div class="card"><div class="num">✓</div><h3>Plugin Doctor</h3><p>7 tools, 1 hook — discovery, manifest, import and registration all pass.</p></div>
+      <div class="card"><div class="num">✓</div><h3>Catalog validate</h3><p>Loadable, declared tools match, no collisions, security scan safe, no core override.</p></div>
+      <div class="card"><div class="num">✓</div><h3>Live delivery</h3><p><code>add_reminder</code> completed in 0.80s, HTTP 202, reminder created on the phone with an arrival alert.</p></div>
+    </div>
+    <div class="foot">30 unit tests, no network, no Hermes install required.<small>ADDRESS FORMS TESTED AGAINST A REAL IPHONE · FULL ADDRESS · STREET ONLY · LOWERCASE · PARENTHESISED NAME</small></div>
+  </div>
+</section>
+
+<!-- 06 · Close -->
+<section class="slide statement">
+  <div class="kicker">RECLOC · MIT · github.com/SomeoneElseSt/recloc</div>
+  <h1>Your location<br>never leaves<br>your phone.</h1>
+  <div class="accent-bar"></div>
+  <div class="meta">Ask your agent once. Be reminded where it matters.</div>
+</section>
+
+</main>
+<div class="hint">← → to navigate</div>
+<script>
+const slides = [...document.querySelectorAll('.slide')];
+let i = 0;
+function fit() {
+  const d = document.querySelector('.deck');
+  // Fill the window: use the larger scale so the slide covers it edge to edge.
+  const s = Math.max(window.innerWidth / 1920, window.innerHeight / 1080);
+  // Scale from the top-left origin, so offset in SCALED pixels. Centring on the
+  // smaller axis leaves the overflow split evenly and keeps the slide centred.
+  d.style.left = `${(window.innerWidth - 1920 * s) / 2}px`;
+  d.style.top = `${(window.innerHeight - 1080 * s) / 2}px`;
+  d.style.transform = `scale(${s})`;
+}
+function show(n) {
+  slides[i].classList.remove('current');
+  i = Math.max(0, Math.min(slides.length - 1, n));
+  slides[i].classList.add('current');
+}
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight' || e.key === ' ') { e.preventDefault(); show(i + 1); }
+  if (e.key === 'ArrowLeft') { e.preventDefault(); show(i - 1); }
+});
+window.addEventListener('resize', fit);
+fit();
+</script>
+</body>
+</html>

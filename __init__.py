@@ -10,6 +10,16 @@ from .remind import handlers
 from .places import places
 from .hooks.place_hook import unmapped_place_hook
 
+# The phone-side setup prompt, handed to the user verbatim. Shortcuts needs it
+# pasted into Apple Intelligence; there is no API to create the shortcut for them.
+SETUP_PROMPT = """Make a shortcut where:
+1. When I receive a notification from the app 'Brrr'
+2. Filter for 'Title' contains 'Reminder'
+3. Add variable 'Body' from the notification to 'Reminders' with 'Alert' 'When I Arrive' at variable 'Subtitle' of 'Notification'.
+4. Show a notification saying 'Reminder added: followed by the variable 'Body', and include the variable 'Subtitle'.
+
+Do not add a Receive block. It's unnecessary."""
+
 PROVIDES_TOOLS = [
     "add_reminder",
     "list_reminders",
@@ -91,4 +101,19 @@ def register(ctx) -> None:
         "add-place",
         handler=_handle_add_place,
         description="Save a place name to an address (the agent never sees the address)",
+    )
+
+    def _handle_setup(_raw_args: str) -> str:
+        # Print the prompt the user pastes into Apple Intelligence in Shortcuts.
+        return (
+            "Set up the phone side once. In Shortcuts, make a new shortcut and give Apple's AI this prompt:\n\n"
+            + SETUP_PROMPT
+            + "\n\nThen create the automation: Automation > + > Notification > App brrr > "
+            "Title contains Reminder > Run Immediately > this shortcut."
+        )
+
+    ctx.register_command(
+        "setup",
+        handler=_handle_setup,
+        description="Print the prompt to paste into Apple Intelligence for the phone shortcut",
     )
