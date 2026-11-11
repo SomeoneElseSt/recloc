@@ -30,6 +30,14 @@ if "plugins.plugin_storage" not in sys.modules:
     sys.modules["plugins.plugin_storage"] = fake
 
 import recloc  # noqa: E402
+if "agent.secret_scope" not in sys.modules:
+    scope = types.ModuleType("agent.secret_scope")
+    scope.get_secret = lambda name: os.environ.get(name)   # the real one reads the profile's secrets
+    agent_pkg = types.ModuleType("agent")
+    agent_pkg.secret_scope = scope
+    sys.modules["agent"] = agent_pkg
+    sys.modules["agent.secret_scope"] = scope
+
 from recloc.brrr import brrr_client  # noqa: E402
 from recloc.places import places  # noqa: E402
 from recloc.remind import handlers  # noqa: E402

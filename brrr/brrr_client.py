@@ -11,7 +11,6 @@ What the phone tests taught us:
 from __future__ import annotations
 
 import json
-import os
 import random
 import re
 import time
@@ -46,7 +45,10 @@ class BrrrError(RuntimeError):
 
 
 def webhook_url() -> str | None:
-    url = (os.environ.get(WEBHOOK_ENV) or "").strip()
+    # Through Hermes' secret scope, not os.environ: a gateway serves several
+    # profiles, and os.environ returns the LAUNCH profile's value, not this one's.
+    from agent.secret_scope import get_secret
+    url = (get_secret(WEBHOOK_ENV) or "").strip()
     return url or None
 
 
@@ -137,7 +139,12 @@ def send(fields: dict[str, str]) -> dict:
     """
     url = webhook_url()
     if url is None:
-        raise BrrrError(f"{WEBHOOK_ENV} is not set on this machine")
+        # Point at the fix, not just the missing variable: the user asked the agent
+        # to set this up, so the reply should say what to do next.
+        raise BrrrError(
+            f"{WEBHOOK_ENV} is not set on this machine. Run /recloc-setup to get the phone "
+            "setup prompt, and export BRRR_WEBHOOK_URL from the brrr app in ~/.hermes/.env."
+        )
     body = json.dumps(fields).encode("utf-8")
     last_status, last_body = None, ""
     for attempt in range(1, MAX_ATTEMPTS + 1):

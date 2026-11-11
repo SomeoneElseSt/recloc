@@ -39,7 +39,8 @@ def add_reminder(args: dict, **kwargs) -> str:
         return _err(str(exc))
     return _ok(
         title=fields["title"],
-        subtitle=fields["subtitle"],
+        # Redacted: the model must not hold the address (see /add-place's claim).
+        subtitle=places.redact_address(fields["subtitle"]),
         delivered=result["status"],
         attempts=result["attempts"],
         address_from=place,

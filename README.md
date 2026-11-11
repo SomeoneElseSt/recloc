@@ -30,7 +30,7 @@ echo 'BRRR_WEBHOOK_URL=https://api.brrr.now/v1/<secret>' >> ~/.hermes/.env
 Get the webhook URL from the [brrr](https://brrr.now) app. Export it wherever Hermes runs — never
 commit it, and never put it in `config.yaml`.
 
-Then set up the phone side once. The agent hands you the exact prompt to paste into Apple Intelligence — get it any time with `/setup`, or read [`iphone/SHORTCUT.md`](iphone/SHORTCUT.md).
+Then set up the phone side once. The agent hands you the exact prompt to paste into Apple Intelligence — get it any time with `/recloc-setup`, or read [`iphone/SHORTCUT.md`](iphone/SHORTCUT.md).
 
 ## Tools the agent gets
 

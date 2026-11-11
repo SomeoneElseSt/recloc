@@ -113,7 +113,7 @@ def register(ctx) -> None:
         )
 
     ctx.register_command(
-        "setup",
+        "recloc-setup",
         handler=_handle_setup,
         description="Print the prompt to paste into Apple Intelligence for the phone shortcut",
     )
