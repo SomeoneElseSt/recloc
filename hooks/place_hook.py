@@ -27,7 +27,9 @@ def unmapped_place_hook(*, tool_name: str = "", args: dict | None = None, **kwar
     return {
         "action": "block",
         "message": (
-            f"No saved place called {place!r}. Ask the user to run "
-            f"/add-place {place} so the address can be saved, or ask them for the full address."
+            f"No saved place called {place!r}. Tell the user they can add it with:\n\n"
+            f"    /add-place {place} <address>\n\n"
+            f"for example `/add-place {place} 1234 Market St, San Francisco, CA` — "
+            f"or they can give you the full address directly."
         ),
     }
