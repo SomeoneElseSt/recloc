@@ -1,0 +1,27 @@
+name: location-reminders
+version: 0.1.0
+description: Location-triggered Apple Reminders from chat, with the user's location never leaving their phone
+author: Steve
+manifest_version: 2
+api_version: 1
+provides_tools:
+  - add_reminder
+  - list_reminders
+  - cancel_reminder
+  - save_place
+  - edit_place
+  - list_places
+  - remove_place
+provides_hooks:
+  - pre_tool_call
+requires_env:
+  - name: BRRR_WEBHOOK_URL
+    description: "brrr webhook URL (brrr.now — the secret is the last path segment)"
+    secret: true
+config_schema:
+  brrr_title:
+    type: str
+    default: HERMES
+    label: Notification title
+    description: The title the phone automation filters on
+tags: [reminders, ios, location, apple]
