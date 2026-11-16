@@ -1,6 +1,6 @@
 # recloc
 
-> This plugin is now available on Hermes agent! [recloc plugin](https://hermes-agent.nousresearch.com/marketplace/recloc) [merged PR](https://github.com/NousResearch/hermes-agent/pull/153339)
+> This plugin is now available on Hermes agent! [recloc plugin](https://hermes-agent.nousresearch.com/marketplace/recloc) · [merged PR](https://github.com/NousResearch/hermes-agent/pull/153339)
 
 Location reminders for [Hermes](https://github.com/NousResearch/hermes-agent) — ask your agent
 *"remind me to buy microfiber cloths when I'm at Walgreens"* and Apple Reminders alerts you when
